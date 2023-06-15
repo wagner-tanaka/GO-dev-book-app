@@ -18,9 +18,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// take the body and convert to a user struct
+	// take the body and convert to a user struct ad save in the memory
 	var user models.User
 	if err = json.Unmarshal(requestBody, &user); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// prepare and validate the user
+	if err = user.Prepare(); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
 	}
