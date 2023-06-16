@@ -44,19 +44,19 @@ func (repository UsersRepository) Create(user models.User) (uint64, error) {
 func (repository UsersRepository) Search(nameOrNick string) ([]models.User, error) {
 	nameOrNick = "%" + nameOrNick + "%"
 
-	lines, err := repository.db.Query(
+	rows, err := repository.db.Query(
 		"select id, name, nick, email, createdAt from users where name LIKE ? or nick LIKE ?", nameOrNick, nameOrNick,
 	)
 	if err != nil {
 		return nil, err
 	}
-	defer lines.Close()
+	defer rows.Close()
 
 	var users []models.User
-	for lines.Next() {
+	for rows.Next() {
 		var user models.User
 
-		if err = lines.Scan(
+		if err = rows.Scan(
 			&user.ID,
 			&user.Name,
 			&user.Nick,
@@ -69,5 +69,29 @@ func (repository UsersRepository) Search(nameOrNick string) ([]models.User, erro
 		users = append(users, user)
 	}
 	return users, nil
+}
 
+func (repository UsersRepository) GetUserByID(ID uint64) (models.User, error) {
+	rows, err := repository.db.Query(
+		"select id, name, nick, email, createdAt from users where id = ?", ID,
+	)
+	if err != nil {
+		return models.User{}, err
+	}
+	defer rows.Close()
+
+	var user models.User
+	if rows.Next() {
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return models.User{}, err
+		}
+	}
+
+	return user, nil
 }
