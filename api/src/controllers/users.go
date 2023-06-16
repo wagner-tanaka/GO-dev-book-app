@@ -29,7 +29,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// prepare and validate the user
-	if err = user.Prepare(" "); err != nil {
+	if err = user.Prepare("register"); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
 		return
 	}
