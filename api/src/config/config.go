@@ -10,6 +10,8 @@ import (
 var (
 	DataBaseConnectionString = ""
 	Port                     = 0
+
+	SecretKey []byte
 )
 
 func Load() {
@@ -28,4 +30,6 @@ func Load() {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	DataBaseConnectionString = dbUser + ":" + dbPassword + "@/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
